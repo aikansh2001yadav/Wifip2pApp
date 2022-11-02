@@ -45,26 +45,6 @@ import android.util.Log;
 import android.util.Pair;
 import android.widget.Toast;
 
-/**
- * @author xldownloadlib
- *
- */
-
-class PeerInfo {
-	public String host;
-	public int port;
-
-	public PeerInfo(String host, int port) {
-		this.host = host;
-		this.port = port;
-	}
-
-	@Override
-	public String toString() {
-		return "peer:" + host + "port:" + port;
-	}
-}
-
 interface WifiP2pNetServiceListener extends ConnectionInfoListener, PeerListListener {
 	public void updateThisDevice(WifiP2pDevice device);
 }
@@ -95,7 +75,6 @@ public class AppNetService extends Service implements ChannelListener,
 	// �����һ��Tag��ǩ
 	private static final String TAG = "AppNetService";
 	private boolean retryChannel = false;
-	// ���ﶨ���һ��Binder�࣬����onBind()�з��������Activity�Ǳ߿��Ի�ȡ��
 	private NetServiceBinder mBinder = new NetServiceBinder();
 	private ThreadPoolManager serviceThread = null;
 	private WifiP2pManager manager = null;
@@ -235,7 +214,6 @@ public class AppNetService extends Service implements ChannelListener,
 		this.activity = (WiFiDirectActivity) activity;
 		if (localDevice != null)
 			updateThisDevice(localDevice);
-		// ˢ��peer�б� .
 		discoverPeers();
 	}
 
@@ -380,17 +358,17 @@ public class AppNetService extends Service implements ChannelListener,
 		Message msg = new Message();
 		msg.what = ConfigInfo.MSG_SEND_STRING;
 		msg.arg1 = sendBytes;// send;
-		activity.getHandler().sendMessage(msg);		
+		activity.getHandler().sendMessage(msg);
 	}
 	
-	public void postSendRecvBytes(int sendBytes, int recvBytes)
-	{
-		Message msg = new Message();
-		msg.what = ConfigInfo.MSG_SEND_RECV_FILE_BYTES;
-		msg.arg1 = sendBytes;// send;
-		msg.arg2 = recvBytes;// recv;
-		activity.getHandler().sendMessage(msg);		
-	}
+//	public void postSendRecvBytes(int sendBytes, int recvBytes)
+//	{
+//		Message msg = new Message();
+//		msg.what = ConfigInfo.MSG_SEND_RECV_FILE_BYTES;
+//		msg.arg1 = sendBytes;// send;
+//		msg.arg2 = recvBytes;// recv;
+//		activity.getHandler().sendMessage(msg);
+//	}
 	
 	public void postSendPeerInfoResult(int result) {
 		Message msg = new Message();
@@ -406,32 +384,32 @@ public class AppNetService extends Service implements ChannelListener,
 		
 	}
 	
-	public void postVerifyRecvFile() {
-		Message msg = new Message();
-		msg.what = ConfigInfo.MSG_VERIFY_RECV_FILE_DIALOG;
-		activity.getHandler().sendMessage(msg);
-	}
+//	public void postVerifyRecvFile() {
+//		Message msg = new Message();
+//		msg.what = ConfigInfo.MSG_VERIFY_RECV_FILE_DIALOG;
+//		activity.getHandler().sendMessage(msg);
+//	}
 	
-	public void postRecvFileResult(int result) {
-		Message msg = new Message();
-		msg.what = ConfigInfo.MSG_REPORT_RECV_FILE_RESULT;
-		msg.arg1 = result;
-		activity.getHandler().sendMessage(msg);
-	}
+//	public void postRecvFileResult(int result) {
+//		Message msg = new Message();
+//		msg.what = ConfigInfo.MSG_REPORT_RECV_FILE_RESULT;
+//		msg.arg1 = result;
+//		activity.getHandler().sendMessage(msg);
+//	}
 		
-	public void postSendFileResult(int result) {
-		Message msg = new Message();
-		msg.what = ConfigInfo.MSG_REPORT_SEND_FILE_RESULT;
-		msg.arg1 = result;
-		activity.getHandler().sendMessage(msg);
-	}
+//	public void postSendFileResult(int result) {
+//		Message msg = new Message();
+//		msg.what = ConfigInfo.MSG_REPORT_SEND_FILE_RESULT;
+//		msg.arg1 = result;
+//		activity.getHandler().sendMessage(msg);
+//	}
 	
 	public void postSendStreamResult(int result) {
 		Message msg = new Message();
 		msg.what = ConfigInfo.MSG_REPORT_SEND_STREAM_RESULT;
 		msg.arg1 = result;
 		activity.getHandler().sendMessage(msg);
-	}	
+	}
 	private SocketAddress remoteSockAddr;
 
 	public void setRemoteSockAddress(SocketAddress sockAddr) {
@@ -446,60 +424,60 @@ public class AppNetService extends Service implements ChannelListener,
 		
 	}
 	
-	public String getFileInfo(Uri uri) throws IOException {
-		Pair<String, Integer>  pair = Utility.getFileNameAndSize(getActivity(), uri);
-		String name = pair.first;
-		long size = pair.second;
-		getActivity().setSendFileSize(size);
-		getActivity().setSendFileName(name);
-		String fileInfo = "size:" + size + "name:" + name;
-		return fileInfo;
-	}
-
-	public InputStream getInputStream(Uri uri) throws FileNotFoundException  {
-		ContentResolver cr = getActivity().getContentResolver();
-		return cr.openInputStream(uri);
-	}
+//	public String getFileInfo(Uri uri) throws IOException {
+//		Pair<String, Integer>  pair = Utility.getFileNameAndSize(getActivity(), uri);
+//		String name = pair.first;
+//		long size = pair.second;
+//		getActivity().setSendFileSize(size);
+//		getActivity().setSendFileName(name);
+//		String fileInfo = "size:" + size + "name:" + name;
+//		return fileInfo;
+//	}
+//
+//	public InputStream getInputStream(Uri uri) throws FileNotFoundException  {
+//		ContentResolver cr = getActivity().getContentResolver();
+//		return cr.openInputStream(uri);
+//	}
 	
-	public void handleRecvFile(InputStream ins) {
-		handleRecvFileInfo(ins);
-
-		// TODO �ȴ����淵��֪ͨ�Ƿ��Ӧ�����ļ���
-		String extName = ".jpg"; // default .
-		if (!activity.recvFileName().isEmpty()) {
-			int dotIndex = activity.recvFileName().lastIndexOf(".");
-			if (dotIndex != -1
-					&& dotIndex != activity.recvFileName().length() - 1) {
-				extName = activity.recvFileName().substring(dotIndex);
-			}
-		}
-		Log.d(TAG, "activity.recvFileName():" + activity.recvFileName()
-				+ " extName:" + extName);
-
-		if (waitForVerifyRecvFile() && isbVerifyRecvFile()) {
-			recvFileAndSave(ins, extName);
-		} else
-			postRecvFileResult(-1);
-	}
+//	public void handleRecvFile(InputStream ins) {
+//		handleRecvFileInfo(ins);
+//
+//		// TODO �ȴ����淵��֪ͨ�Ƿ��Ӧ�����ļ���
+//		String extName = ".jpg"; // default .
+//		if (!activity.recvFileName().isEmpty()) {
+//			int dotIndex = activity.recvFileName().lastIndexOf(".");
+//			if (dotIndex != -1
+//					&& dotIndex != activity.recvFileName().length() - 1) {
+//				extName = activity.recvFileName().substring(dotIndex);
+//			}
+//		}
+//		Log.d(TAG, "activity.recvFileName():" + activity.recvFileName()
+//				+ " extName:" + extName);
+//
+//		if (waitForVerifyRecvFile() && isbVerifyRecvFile()) {
+//			recvFileAndSave(ins, extName);
+//		} else
+//			postRecvFileResult(-1);
+//	}
 
 	private CountDownLatch startRecvFileSignal = null;
 
-	public void verifyRecvFile() {
-		assert (startRecvFileSignal != null);
-		startRecvFileSignal.countDown();
-	}
+//	public void verifyRecvFile() {
+//		assert (startRecvFileSignal != null);
+//		startRecvFileSignal.countDown();
+//	}
 
-	private boolean waitForVerifyRecvFile() {
-		try {
-			startRecvFileSignal = new CountDownLatch(1);// ���³�ʼ����
-			boolean res = startRecvFileSignal.await(10, TimeUnit.SECONDS);
-			return res;
-		} catch (InterruptedException e) {
-			Log.e(this.getClass().getName(), "waitForVerifyRecvFile e:", e);
-			e.printStackTrace();
-			return false;
-		}
-	}
+//	private boolean waitForVerifyRecvFile() {
+//		try {
+//			startRecvFileSignal = new CountDownLatch(1);// ���³�ʼ����
+//			boolean res = startRecvFileSignal.await(10, TimeUnit.SECONDS);
+//			return res;
+//		} catch (InterruptedException e) {
+//			Log.e(this.getClass().getName(), "waitForVerifyRecvFile e:", e);
+//			e.printStackTrace();
+//			return false;
+//		}
+//	}
 
 	public boolean handleRecvPeerList(InputStream ins) {
 		try {
@@ -532,40 +510,40 @@ public class AppNetService extends Service implements ChannelListener,
 		}
 	}
 	
-	public boolean handleRecvFileInfo(InputStream ins) {
-		activity.resetRecvFileInfo();
-		try {
-			int iSize = ins.read();
-			byte[] buffer = new byte[iSize];
-			int len = ins.read(buffer, 0, iSize);
-			String strBuffer = new String(buffer, 0, len);
-			assert (strBuffer.length() == iSize);
-			int offset1 = strBuffer.indexOf("size:");
-			int offset2 = strBuffer.indexOf("name:");
-			Log.d(WiFiDirectActivity.TAG, "recvDistFileInfo strBuffer:"
-					+ strBuffer);
-			if (offset1 != -1 && offset2 != -1) {
-				assert (offset1 < offset2);
-				String strSize = strBuffer.substring(offset1 + 5, offset2);
-				activity.setRecvFileSize(Long.parseLong(strSize));
-				activity.setRecvFileName(strBuffer.substring(offset2 + 5,
-						strBuffer.length()));
-
-				Log.d(WiFiDirectActivity.TAG,
-						"iFileSize:"
-								+ Integer.parseInt(strSize)
-								+ " strFileName:"
-								+ strBuffer.substring(offset2 + 5,
-										strBuffer.length()));
-				postVerifyRecvFile();
-				return true;
-			}
-			return false;
-		} catch (IOException e) {
-			Log.e(WiFiDirectActivity.TAG, e.getMessage());
-			return false;
-		}
-	}
+//	public boolean handleRecvFileInfo(InputStream ins) {
+//		activity.resetRecvFileInfo();
+//		try {
+//			int iSize = ins.read();
+//			byte[] buffer = new byte[iSize];
+//			int len = ins.read(buffer, 0, iSize);
+//			String strBuffer = new String(buffer, 0, len);
+//			assert (strBuffer.length() == iSize);
+//			int offset1 = strBuffer.indexOf("size:");
+//			int offset2 = strBuffer.indexOf("name:");
+//			Log.d(WiFiDirectActivity.TAG, "recvDistFileInfo strBuffer:"
+//					+ strBuffer);
+//			if (offset1 != -1 && offset2 != -1) {
+//				assert (offset1 < offset2);
+//				String strSize = strBuffer.substring(offset1 + 5, offset2);
+//				activity.setRecvFileSize(Long.parseLong(strSize));
+//				activity.setRecvFileName(strBuffer.substring(offset2 + 5,
+//						strBuffer.length()));
+//
+//				Log.d(WiFiDirectActivity.TAG,
+//						"iFileSize:"
+//								+ Integer.parseInt(strSize)
+//								+ " strFileName:"
+//								+ strBuffer.substring(offset2 + 5,
+//										strBuffer.length()));
+//				postVerifyRecvFile();
+//				return true;
+//			}
+//			return false;
+//		} catch (IOException e) {
+//			Log.e(WiFiDirectActivity.TAG, e.getMessage());
+//			return false;
+//		}
+//	}
 
 	public boolean handleRecvPeerInfo(InputStream ins) {
 		try {
@@ -609,53 +587,53 @@ public class AppNetService extends Service implements ChannelListener,
 		}
 	}
 
-	public boolean recvFileAndSave(InputStream ins, String extName) {
-		try {
-			final File recvFile = new File(
-					Environment.getExternalStorageDirectory()
-							+ "/wifi-direct/wifip2pshared-"
-							+ System.currentTimeMillis() + extName);
-
-			File dirs = new File(recvFile.getParent());
-			if (!dirs.exists())
-				dirs.mkdirs();
-			recvFile.createNewFile();
-
-			Log.d(WiFiDirectActivity.TAG,
-					"server: copying files " + recvFile.toString());
-			FileOutputStream fileOutS = new FileOutputStream(recvFile);
-
-			byte buf[] = new byte[1024];
-			int len;
-			while ((len = ins.read(buf)) != -1) {
-				fileOutS.write(buf, 0, len);
-				// ֪ͨ���淢��/�����ļ����ȡ�
-				postSendRecvBytes(0, len);
-
-			}
-			fileOutS.close();
-			String strFile = recvFile.getAbsolutePath();
-			if (strFile != null) {
-				//  Go, let's go and test a new cool & powerful method.
-				Utility.openFile(activity, recvFile);
-			}
-			return true;
-		} catch (IOException e) {
-			Log.e(WiFiDirectActivity.TAG, "IOException", e);
-			e.printStackTrace();
-			return false;
-		}
-	}
+//	public boolean recvFileAndSave(InputStream ins, String extName) {
+//		try {
+//			final File recvFile = new File(
+//					Environment.getExternalStorageDirectory()
+//							+ "/wifi-direct/wifip2pshared-"
+//							+ System.currentTimeMillis() + extName);
+//
+//			File dirs = new File(recvFile.getParent());
+//			if (!dirs.exists())
+//				dirs.mkdirs();
+//			recvFile.createNewFile();
+//
+//			Log.d(WiFiDirectActivity.TAG,
+//					"server: copying files " + recvFile.toString());
+//			FileOutputStream fileOutS = new FileOutputStream(recvFile);
+//
+//			byte buf[] = new byte[1024];
+//			int len;
+//			while ((len = ins.read(buf)) != -1) {
+//				fileOutS.write(buf, 0, len);
+//				// ֪ͨ���淢��/�����ļ����ȡ�
+//				postSendRecvBytes(0, len);
+//
+//			}
+//			fileOutS.close();
+//			String strFile = recvFile.getAbsolutePath();
+//			if (strFile != null) {
+//				//  Go, let's go and test a new cool & powerful method.
+//				Utility.openFile(activity, recvFile);
+//			}
+//			return true;
+//		} catch (IOException e) {
+//			Log.e(WiFiDirectActivity.TAG, "IOException", e);
+//			e.printStackTrace();
+//			return false;
+//		}
+//	}
 
 	public void handleSendPeerInfo() {		
 		serviceThread.execute(new SendPeerInfoRunable(new PeerInfo(hostAddress(), ConfigInfo.LISTEN_PORT), //Owner's address
 				this));
 	}
 
-	public void handleSendFile(String host, int port, Uri uri) {	
-		Log.d(this.getClass().getName(), "handleSendFile");	
-		serviceThread.execute(new SendFileRunable(host, port, uri, this));
-	}
+//	public void handleSendFile(String host, int port, Uri uri) {
+//		Log.d(this.getClass().getName(), "handleSendFile");
+//		serviceThread.execute(new SendFileRunable(host, port, uri, this));
+//	}
 	
 	public void handleBroadcastPeerList() {
 		if (isGroupOwner()) {

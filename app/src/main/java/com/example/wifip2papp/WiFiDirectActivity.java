@@ -197,199 +197,199 @@ public class WiFiDirectActivity extends Activity implements
 		sendFileName = name;
 	}
 
-	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		// User has picked an image. Transfer it to group owner i.e peer using
-		if (resultCode != RESULT_OK) {
-			return;
-		}
-
-		Log.d(this.getClass().getName(), "onActivityResult requestCode:"
-				+ requestCode + " resultCode:" + resultCode);
-		if (requestCode == ConfigInfo.REQUEST_CODE_SELECT_IMAGE) {
-			if (data == null) {
-				Log.d(this.getClass().getName(),
-						"onActivityResult data == null, no choice.");
-				return;
-			}
-			Uri uri = data.getData();
-			getDetailFrag().showStatus("Sending: " + uri);
-			sendFile(uri);
-		}
-	}
+//	@Override
+//	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//		// User has picked an image. Transfer it to group owner i.e peer using
+//		if (resultCode != RESULT_OK) {
+//			return;
+//		}
+//
+//		Log.d(this.getClass().getName(), "onActivityResult requestCode:"
+//				+ requestCode + " resultCode:" + resultCode);
+//		if (requestCode == ConfigInfo.REQUEST_CODE_SELECT_IMAGE) {
+//			if (data == null) {
+//				Log.d(this.getClass().getName(),
+//						"onActivityResult data == null, no choice.");
+//				return;
+//			}
+//			Uri uri = data.getData();
+//			getDetailFrag().showStatus("Sending: " + uri);
+//			sendFile(uri);
+//		}
+//	}
 
 	// ѡȡͼƬ
-	public void startSelectImage() {
-		Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-		intent.setType("image/*");
-		startActivityForResult(intent, ConfigInfo.REQUEST_CODE_SELECT_IMAGE);
-	}
+//	public void startSelectImage() {
+//		Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+//		intent.setType("image/*");
+//		startActivityForResult(intent, ConfigInfo.REQUEST_CODE_SELECT_IMAGE);
+//	}
 
-	// ѡȡ��Ƶ
-	public void startSelectVideo() {
-		Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-		intent.setType("video/*");
-		startActivityForResult(intent, ConfigInfo.REQUEST_CODE_SELECT_IMAGE);
-	}
+//	// ѡȡ��Ƶ
+//	public void startSelectVideo() {
+//		Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+//		intent.setType("video/*");
+//		startActivityForResult(intent, ConfigInfo.REQUEST_CODE_SELECT_IMAGE);
+//	}
 
-	// ѡȡ��Ƶ
-	public void startSelectAudio() {
-		Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-		intent.setType("video/*");
-		startActivityForResult(intent, ConfigInfo.REQUEST_CODE_SELECT_IMAGE);
-	}
+//	// ѡȡ��Ƶ
+//	public void startSelectAudio() {
+//		Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+//		intent.setType("video/*");
+//		startActivityForResult(intent, ConfigInfo.REQUEST_CODE_SELECT_IMAGE);
+//	}
 
-	// ����
-	public void startSelectTakeImage() {
-		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE); // "android.media.action.IMAGE_CAPTURE";
-		intent.putExtra(MediaStore.EXTRA_OUTPUT,
-				Environment.getExternalStorageDirectory() + "/wifi-direct/");
-		startActivityForResult(intent,
-				ConfigInfo.REQUEST_CODE_SELECT_TAKE_IMAGE);
-	}
+//	// ����
+//	public void startSelectTakeImage() {
+//		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE); // "android.media.action.IMAGE_CAPTURE";
+//		intent.putExtra(MediaStore.EXTRA_OUTPUT,
+//				Environment.getExternalStorageDirectory() + "/wifi-direct/");
+//		startActivityForResult(intent,
+//				ConfigInfo.REQUEST_CODE_SELECT_TAKE_IMAGE);
+//	}
 
 	// ������Ƶ
-	public void startSelectTakeVedio() {
-		int durationLimit = 60; // SystemProperties.getInt("ro.media.enc.lprof.duration",
-								// 60);
-		int sizeLimit = 100 * 1024 * 1024;
-		Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-		intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
-		intent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, sizeLimit);
-		intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, durationLimit);
-		startActivityForResult(intent,
-				ConfigInfo.REQUEST_CODE_SELECT_TAKE_VIDEO);
-	}
+//	public void startSelectTakeVedio() {
+//		int durationLimit = 60; // SystemProperties.getInt("ro.media.enc.lprof.duration",
+//								// 60);
+//		int sizeLimit = 100 * 1024 * 1024;
+//		Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+//		intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
+//		intent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, sizeLimit);
+//		intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, durationLimit);
+//		startActivityForResult(intent,
+//				ConfigInfo.REQUEST_CODE_SELECT_TAKE_VIDEO);
+//	}
 
-	// ѡȡ¼��
-	public void startSelectAudioAmr() {
-		Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-		intent.setType("audio/amr"); // String AUDIO_AMR = "audio/amr";
-		intent.setClassName("com.android.soundrecorder",
-				"com.android.soundrecorder.SoundRecorder");
-		startActivityForResult(intent, ConfigInfo.REQUEST_CODE_SELECT_AUDIO_ARM);
-	}
+//	// ѡȡ¼��
+//	public void startSelectAudioAmr() {
+//		Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+//		intent.setType("audio/amr"); // String AUDIO_AMR = "audio/amr";
+//		intent.setClassName("com.android.soundrecorder",
+//				"com.android.soundrecorder.SoundRecorder");
+//		startActivityForResult(intent, ConfigInfo.REQUEST_CODE_SELECT_AUDIO_ARM);
+//	}
 
-	public void showSelectMediaDialog() {
-		AlertDialog.Builder selectDialog = new AlertDialog.Builder(this);
-		selectDialog.setTitle("ѡȡ�ļ�");
-		selectDialog.setIcon(android.R.drawable.ic_dialog_info);
-		selectDialog.setSingleChoiceItems(new String[] { "ͼƬ", "��Ƶ", "��Ƶ",
-				"����", "¼��", "¼��" }, 0, new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-				dialog.dismiss();
-				switch (which) {
-				case 0:
-					startSelectImage();
-					break;
-				case 1:
-					startSelectVideo();
-					break;
-				case 3:
-					startSelectAudio();
-					break;
-				case 4:
-					startSelectTakeImage();
-					break;
-				case 5:
-					startSelectTakeVedio();
-					break;
-				case 6:
-					startSelectAudioAmr();
-					break;
-				}
-			}
-		});
-		selectDialog.setNegativeButton("ȡ��", null);
-		selectDialog.show();
-	}
+//	public void showSelectMediaDialog() {
+//		AlertDialog.Builder selectDialog = new AlertDialog.Builder(this);
+//		selectDialog.setTitle("ѡȡ�ļ�");
+//		selectDialog.setIcon(android.R.drawable.ic_dialog_info);
+//		selectDialog.setSingleChoiceItems(new String[] { "ͼƬ", "��Ƶ", "��Ƶ",
+//				"����", "¼��", "¼��" }, 0, new DialogInterface.OnClickListener() {
+//			public void onClick(DialogInterface dialog, int which) {
+//				dialog.dismiss();
+//				switch (which) {
+//				case 0:
+//					startSelectImage();
+//					break;
+//				case 1:
+//					startSelectVideo();
+//					break;
+//				case 3:
+//					startSelectAudio();
+//					break;
+//				case 4:
+//					startSelectTakeImage();
+//					break;
+//				case 5:
+//					startSelectTakeVedio();
+//					break;
+//				case 6:
+//					startSelectAudioAmr();
+//					break;
+//				}
+//			}
+//		});
+//		selectDialog.setNegativeButton("ȡ��", null);
+//		selectDialog.show();
+//	}
 
-	public void showSelectPeerDialog() {
-		selectHost = null;
-		AlertDialog.Builder selectDialog = new AlertDialog.Builder(this);
-		selectDialog.setTitle("SELECT PEER");
-		selectDialog.setIcon(android.R.drawable.ic_dialog_info);
+//	public void showSelectPeerDialog() {
+//		selectHost = null;
+//		AlertDialog.Builder selectDialog = new AlertDialog.Builder(this);
+//		selectDialog.setTitle("SELECT PEER");
+//		selectDialog.setIcon(android.R.drawable.ic_dialog_info);
+//
+//		final ArrayList<String> items = new ArrayList<String>();
+//		Iterator<PeerInfo> it = getNetService().getPeerInfoList().iterator();
+//		while (it.hasNext())
+//			items.add(it.next().host);
+//		items.add("null");//���һ��Ԫ����Ϊ��ѡ��null�ɡ�
+//		String[] strHosts = new String[items.size()];//size > 0;
+//		items.toArray(strHosts);
+//		selectDialog.setSingleChoiceItems(strHosts, 0,
+//				new DialogInterface.OnClickListener() {
+//					public void onClick(DialogInterface dialog, int which) {
+//						if (which < items.size()-1) {
+//							selectHost = items.get(which);
+//							Log.d(TAG, "showSelectPeerDialog selectHost:" + selectHost);
+//							dialog.dismiss();
+//							// TODO showSelectMediaDialog ...
+//							// getWiFiDirectActivity().showSelectMediaDialog();
+//							startSelectImage();
+//						}
+//					}
+//				});
+//		selectDialog.setNegativeButton("CANCEL", null);
+//		selectDialog.show();
+//	}
 
-		final ArrayList<String> items = new ArrayList<String>();
-		Iterator<PeerInfo> it = getNetService().getPeerInfoList().iterator();
-		while (it.hasNext())
-			items.add(it.next().host);
-		items.add("null");//���һ��Ԫ����Ϊ��ѡ��null�ɡ�
-		String[] strHosts = new String[items.size()];//size > 0;
-		items.toArray(strHosts);
-		selectDialog.setSingleChoiceItems(strHosts, 0,
-				new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						if (which < items.size()-1) {
-							selectHost = items.get(which);
-							Log.d(TAG, "showSelectPeerDialog selectHost:" + selectHost);
-							dialog.dismiss();
-							// TODO showSelectMediaDialog ...
-							// getWiFiDirectActivity().showSelectMediaDialog();
-							startSelectImage();
-						}
-					}
-				});
-		selectDialog.setNegativeButton("CANCEL", null);
-		selectDialog.show();
-	}
+//	private void verifyRecvFile() {
+//		AlertDialog.Builder normalDia = new AlertDialog.Builder(this);
+//		normalDia.setIcon(R.drawable.ic_launcher);
+//		normalDia.setTitle("Verify Receive File");
+//		normalDia.setMessage("NAME:" + recvFileName + "\nSIZE:"
+//				+ ((double) recvFileSize) / 1024 + "KB\nFROM:"
+//				+ getNetService().getRemoteSockAddress());
+//
+//		normalDia.setPositiveButton("ȷ��",
+//				new DialogInterface.OnClickListener() {
+//					@Override
+//					public void onClick(DialogInterface dialog, int which) {
+//						AppNetService netService = getNetService();
+//						netService.setbVerifyRecvFile(true);
+//						netService.verifyRecvFile(); // �������bRecvFile = true;���档
+//					}
+//				});
+//		normalDia.setNegativeButton("ȡ��",
+//				new DialogInterface.OnClickListener() {
+//					@Override
+//					public void onClick(DialogInterface dialog, int which) {
+//						AppNetService netService = getNetService();
+//						netService.setbVerifyRecvFile(false);
+//						netService.verifyRecvFile(); // �������bRecvFile = true;���档
+//					}
+//				});
+//		normalDia.create().show();
+//	}
 
-	private void verifyRecvFile() {
-		AlertDialog.Builder normalDia = new AlertDialog.Builder(this);
-		normalDia.setIcon(R.drawable.ic_launcher);
-		normalDia.setTitle("Verify Receive File");
-		normalDia.setMessage("NAME:" + recvFileName + "\nSIZE:"
-				+ ((double) recvFileSize) / 1024 + "KB\nFROM:"
-				+ getNetService().getRemoteSockAddress());
+//	public void sendFile(Uri uri) {
+//		//lockSendFile.lock(); // ò����UI���̼߳�����Ч��
+//		if (!isSendingFile) {
+//			isSendingFile = true;
+//			resetSendFileInfo();
+//			String host = "";
+//			if (appNetService.isPeer()) {
+//				host = appNetService.hostAddress();
+//			} else {
+//				assert (!selectHost.isEmpty());
+//				host = selectHost;
+//			}
+//			int port = ConfigInfo.LISTEN_PORT;
+//			//String filePath = uri.toString();
+//			//new SendFileAsyncTask(filePath, host, port).execute(this);
+//			// let's go and test ...
+//			appNetService.handleSendFile(host, port, uri);
+//			Log.d(TAG, "send host:" + host + "port:"+ port + "uri:" + uri);
+//		}
+//		else
+//			showToastTips("Just allowe only a sending file concurrently.");
+//	}
 
-		normalDia.setPositiveButton("ȷ��",
-				new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						AppNetService netService = getNetService();
-						netService.setbVerifyRecvFile(true);
-						netService.verifyRecvFile(); // �������bRecvFile = true;���档
-					}
-				});
-		normalDia.setNegativeButton("ȡ��",
-				new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						AppNetService netService = getNetService();
-						netService.setbVerifyRecvFile(false);
-						netService.verifyRecvFile(); // �������bRecvFile = true;���档
-					}
-				});
-		normalDia.create().show();
-	}
-
-	public void sendFile(Uri uri) {
-		//lockSendFile.lock(); // ò����UI���̼߳�����Ч��
-		if (!isSendingFile) {
-			isSendingFile = true;
-			resetSendFileInfo();
-			String host = "";
-			if (appNetService.isPeer()) {
-				host = appNetService.hostAddress();
-			} else {
-				assert (!selectHost.isEmpty());
-				host = selectHost;
-			}
-			int port = ConfigInfo.LISTEN_PORT;
-			//String filePath = uri.toString();
-			//new SendFileAsyncTask(filePath, host, port).execute(this);
-			// let's go and test ...
-			appNetService.handleSendFile(host, port, uri);
-			Log.d(TAG, "send host:" + host + "port:"+ port + "uri:" + uri);
-		}
-		else
-			showToastTips("Just allowe only a sending file concurrently.");
-	}
-
-	public void onSendFileEnd() {
-		//lockSendFile.unlock();
-		isSendingFile = false;
-	}
+//	public void onSendFileEnd() {
+//		//lockSendFile.unlock();
+//		isSendingFile = false;
+//	}
 
 	public void reportPeerInfo() {
 		Log.d(TAG, "reportPeerInfo");
@@ -432,41 +432,41 @@ public class WiFiDirectActivity extends Activity implements
 				activity.showToastTips("receive peer's address.");
 				activity.getDetailFrag().showSendFileVeiw();
 				break;
-			case ConfigInfo.MSG_SEND_RECV_FILE_BYTES:
-				activity.sendBytes = activity.sendBytes + msg.arg1;
-				activity.recvBytes = activity.recvBytes + msg.arg2;
-				int progress1 = 0;
-				int progress2 = 0;
-				if (activity.sendFileSize != 0)
-					progress1 = (int) (activity.sendBytes * 100 / (activity.sendFileSize));
-				if (activity.recvFileSize != 0)
-					progress2 = (int) (activity.recvBytes * 100 / (activity.recvFileSize));
+//			case ConfigInfo.MSG_SEND_RECV_FILE_BYTES:
+//				activity.sendBytes = activity.sendBytes + msg.arg1;
+//				activity.recvBytes = activity.recvBytes + msg.arg2;
+//				int progress1 = 0;
+//				int progress2 = 0;
+//				if (activity.sendFileSize != 0)
+//					progress1 = (int) (activity.sendBytes * 100 / (activity.sendFileSize));
+//				if (activity.recvFileSize != 0)
+//					progress2 = (int) (activity.recvBytes * 100 / (activity.recvFileSize));
+//
+//				String tips = "\n send:" + progress1 + "(%) data(kb):"
+//						+ activity.sendBytes / 1024 + "\n recv:" + progress2
+//						+ "(%) data(kb):" + activity.recvBytes / 1024;
+//
+//				activity.getDetailFrag().showStatus(tips);
+//				break;
 
-				String tips = "\n send:" + progress1 + "(%) data(kb):"
-						+ activity.sendBytes / 1024 + "\n recv:" + progress2
-						+ "(%) data(kb):" + activity.recvBytes / 1024;
+//			case ConfigInfo.MSG_VERIFY_RECV_FILE_DIALOG:
+////				activity.verifyRecvFile();
+//				break;
 
-				activity.getDetailFrag().showStatus(tips);
-				break;
+//			case ConfigInfo.MSG_REPORT_RECV_FILE_RESULT:
+//				if (msg.arg1 == 0)
+//					activity.showToastTips("receive file successed.");
+//				else
+//					activity.showToastTips("receive file failed.");
+//				break;
 
-			case ConfigInfo.MSG_VERIFY_RECV_FILE_DIALOG:
-				activity.verifyRecvFile();
-				break;
-
-			case ConfigInfo.MSG_REPORT_RECV_FILE_RESULT:
-				if (msg.arg1 == 0)
-					activity.showToastTips("receive file successed.");
-				else
-					activity.showToastTips("receive file failed.");
-				break;
-
-			case ConfigInfo.MSG_REPORT_SEND_FILE_RESULT:
-				if (msg.arg1 == 0)
-					activity.showToastTips("send file successed.");
-				else
-					activity.showToastTips("send file failed.");
-				activity.onSendFileEnd();
-				break;
+//			case ConfigInfo.MSG_REPORT_SEND_FILE_RESULT:
+//				if (msg.arg1 == 0)
+//					activity.showToastTips("send file successed.");
+//				else
+//					activity.showToastTips("send file failed.");
+//				activity.onSendFileEnd();
+//				break;
 			case ConfigInfo.MSG_REPORT_SEND_PEER_INFO_RESULT:
 				if (msg.arg1 == 0)
 					activity.showToastTips("send peer's info successed.");

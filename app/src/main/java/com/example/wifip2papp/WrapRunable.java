@@ -1,5 +1,10 @@
 package com.example.wifip2papp;
 
+import com.example.wifip2papp.AppNetService;
+import com.example.wifip2papp.PeerInfo;
+import com.example.wifip2papp.Utility;
+
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,87 +27,87 @@ class SendPeerInfoRunable  implements Runnable {
 		this.peerInfo = peerInfo;
 		this.netService = netService;
 	}
-	
+
 	@Override
 	public void run() {
 		if (Utility.sendPeerInfo(peerInfo.host, peerInfo.port))
 			netService.postSendPeerInfoResult(0);
 		else
 			netService.postSendPeerInfoResult(-1);
-	}	
-}
-
-
-class SendFileRunable implements Runnable {
-	private String host;
-	private int port;
-	private Uri uri;
-	private AppNetService netService;
-	SendFileRunable(String host, int port, Uri uri, AppNetService netService) {
-		this.host = host;
-		this.port = port;
-		this.uri = uri;
-		this.netService = netService;
-	}
-	
-	@Override
-	public void run() {
-		if (sendFile())
-			netService.postSendFileResult(0);
-		else
-			netService.postSendFileResult(-1);
-	}
-
-	private boolean sendFile() {
-		Boolean result = Boolean.TRUE;
-		Socket socket = new Socket();
-		try {
-			Log.d(this.getClass().getName(), "Opening client socket - ");
-			socket.bind(null);
-			socket.connect((new InetSocketAddress(host, port)), ConfigInfo.SOCKET_TIMEOUT);
-			Log.d(this.getClass().getName(),
-					"Client socket - " + socket.isConnected());
-			OutputStream outs = socket.getOutputStream();
-			outs.write(ConfigInfo.COMMAND_ID_SEND_FILE);// id
-			String fileInfo = netService.getFileInfo(uri);
-			Log.d(this.getClass().getName(), "fileInfo:" + fileInfo);
-			outs.write(fileInfo.length());
-			outs.write(fileInfo.getBytes(), 0, fileInfo.length());
-			InputStream ins = netService.getInputStream(uri);
-			byte buf[] = new byte[1024];
-			int len;
-			while ((len = ins.read(buf)) != -1) {
-				outs.write(buf, 0, len);
-				// ֪ͨ���淢��/�����ļ����ȡ�
-				netService.postSendRecvBytes(len, 0);
-			}
-
-			ins.close();
-			outs.close();
-			Log.d(this.getClass().getName(), "Client: Data written");
-		} catch (FileNotFoundException e) {
-			Log.d(this.getClass().getName(), "send file exception " + e.toString());
-		} catch (IOException e) {
-			Log.e(this.getClass().getName(),
-					"send file exception " + e.getMessage());
-			result = Boolean.FALSE;
-		} finally {
-			if (socket != null) {
-				if (socket.isConnected()) {
-					try {
-						socket.close();
-						Log.d(this.getClass().getName(), "socket.close()");
-					} catch (IOException e) {
-						// Give up
-						e.printStackTrace();
-					}
-				}
-			}
-		}
-		return result;
 	}
 }
-
+//
+//
+//class SendFileRunable implements Runnable {
+//	private String host;
+//	private int port;
+//	private Uri uri;
+//	private AppNetService netService;
+//	SendFileRunable(String host, int port, Uri uri, AppNetService netService) {
+//		this.host = host;
+//		this.port = port;
+//		this.uri = uri;
+//		this.netService = netService;
+//	}
+//
+//	@Override
+//	public void run() {
+//		if (sendFile())
+//			netService.postSendFileResult(0);
+//		else
+//			netService.postSendFileResult(-1);
+//	}
+//
+//	private boolean sendFile() {
+//		Boolean result = Boolean.TRUE;
+//		Socket socket = new Socket();
+//		try {
+//			Log.d(this.getClass().getName(), "Opening client socket - ");
+//			socket.bind(null);
+//			socket.connect((new InetSocketAddress(host, port)), ConfigInfo.SOCKET_TIMEOUT);
+//			Log.d(this.getClass().getName(),
+//					"Client socket - " + socket.isConnected());
+//			OutputStream outs = socket.getOutputStream();
+//			outs.write(ConfigInfo.COMMAND_ID_SEND_FILE);// id
+//			String fileInfo = netService.getFileInfo(uri);
+//			Log.d(this.getClass().getName(), "fileInfo:" + fileInfo);
+//			outs.write(fileInfo.length());
+//			outs.write(fileInfo.getBytes(), 0, fileInfo.length());
+//			InputStream ins = netService.getInputStream(uri);
+//			byte buf[] = new byte[1024];
+//			int len;
+//			while ((len = ins.read(buf)) != -1) {
+//				outs.write(buf, 0, len);
+//				// ֪ͨ���淢��/�����ļ����ȡ�
+//				netService.postSendRecvBytes(len, 0);
+//			}
+//
+//			ins.close();
+//			outs.close();
+//			Log.d(this.getClass().getName(), "Client: Data written");
+//		} catch (FileNotFoundException e) {
+//			Log.d(this.getClass().getName(), "send file exception " + e.toString());
+//		} catch (IOException e) {
+//			Log.e(this.getClass().getName(),
+//					"send file exception " + e.getMessage());
+//			result = Boolean.FALSE;
+//		} finally {
+//			if (socket != null) {
+//				if (socket.isConnected()) {
+//					try {
+//						socket.close();
+//						Log.d(this.getClass().getName(), "socket.close()");
+//					} catch (IOException e) {
+//						// Give up
+//						e.printStackTrace();
+//					}
+//				}
+//			}
+//		}
+//		return result;
+//	}
+//}
+//
 // SendStreamRunable �н��Ȼص���������SendStringmRunable�޽��Ȼص���
 class SendStreamRunable implements Runnable {
 	private String host;
@@ -115,7 +120,7 @@ class SendStreamRunable implements Runnable {
 		this.ins = ins;
 		this.netService = netService;
 	}
-	
+
 	@Override
 	public void run() {
 		if (sendStream())
@@ -123,7 +128,7 @@ class SendStreamRunable implements Runnable {
 		else
 			netService.postSendStreamResult(-1);
 	}
-	
+
 	private boolean sendStream() {
 		Socket socket = new Socket();
 		boolean result = true;
@@ -144,7 +149,7 @@ class SendStreamRunable implements Runnable {
 //				netService.postSendStreamBytes(len, 0);
 			}
 			ins.close();
-			outs.close();			
+			outs.close();
 			Log.d(this.getClass().getName(), "send stream ok.");
 
 		} catch (IOException e) {
@@ -178,7 +183,7 @@ class SendStringRunable implements Runnable {
 		this.data = data;
 		this.netService = netService;
 	}
-	
+
 	@Override
 	public void run() {
 		if (sendString())
@@ -186,7 +191,7 @@ class SendStringRunable implements Runnable {
 		else
 			netService.postSendStringResult(-1);
 	}
-	
+
 	private boolean sendString() {
 		Socket socket = new Socket();
 		boolean result = true;

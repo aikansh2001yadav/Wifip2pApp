@@ -187,12 +187,12 @@ class HandleAcceptSocket implements Runnable {
 				lockRecvFile.lock();
 				try {
 					netService.setRemoteSockAddress(sockAddr);
-					netService.handleRecvFile(ins);
+//					netService.handleRecvFile(ins);
 				} finally {
 					lockRecvFile.unlock();
 				}
 			} else if (iCommand == ConfigInfo.COMMAND_ID_REQUEST_SEND_FILE) {
-				netService.handleRecvFileInfo(ins);
+//				netService.handleRecvFileInfo(ins);
 			} else if (iCommand == ConfigInfo.COMMAND_ID_RESPONSE_SEND_FILE) {
 				// TODO ...
 			} else if (iCommand == ConfigInfo.COMMAND_ID_BROADCAST_PEER_LIST) {
